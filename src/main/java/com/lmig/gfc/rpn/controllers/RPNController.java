@@ -113,7 +113,7 @@ public class RPNController {
 
 		double number = stack.pop();
 		double result = (Math.abs(number));
-		undoer = new OneArgumentUndoer(result);
+		undoer = new OneArgumentUndoer(number);
 		stack.push(result);
 		
 		ModelAndView mv = new ModelAndView();
@@ -128,7 +128,7 @@ public class RPNController {
 
 		double number = stack.pop();
 		double result = (Math.sin(number));
-		undoer = new OneArgumentUndoer(result);
+		undoer = new OneArgumentUndoer(number);
 		stack.push(result);
 
 		ModelAndView mv = new ModelAndView();
@@ -142,7 +142,7 @@ public class RPNController {
 
 		double number = stack.pop();
 		double result = (Math.cos(number));
-		undoer = new OneArgumentUndoer(result);
+		undoer = new OneArgumentUndoer(number);
 		stack.push(result);
 
 		ModelAndView mv = new ModelAndView();
