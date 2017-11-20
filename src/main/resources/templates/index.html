@@ -8,31 +8,68 @@
 <body>
 	<h2>RPN Calculator!</h2>
 
-	<form method="post" action="/enter">
-		<div>
-			<input type="number" step="any" name="value" required>
-		</div>
-		<br>
-		<br>
-		<div>
-			<button id="enter">Enter</button>
-		</div>
-	</form>
-	<br>
-	<br>
-	<div>Your Stack:</div>
-	<div>
-		<ol>
+	<div class="input">
+		<form method="post" action="/enter">
+			<div>
+				<input type="number" step="any" name="value" required autofocus>
+			</div>
+
+			<br> <br>
+
+			<div>
+				<button id="button">Enter</button>
+			</div>
+		</form>
+
+		<br> <br> {{#hasTwoOrMoreNumbers}}
+
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<form method="post" action="/add">
+							<button id="button">+</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/subtract">
+							<button id="button">-</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<form method="post" action="/multiply">
+							<button id="button">*</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/divide">
+							<button id="button">/</button>
+						</form>
+					</td>
+				</tr>
+			</thead>
+		</table>
+
+		<br> <br> {{/hasTwoOrMoreNumbers}} <br> <br>
+
+		{{#hasUndoer}}
+
+		<form method="post" action="/undo">
+			<button id="button">Undo</button>
+		</form>
+		
+		{{/hasUndoer}}
+
+	</div>
+
+	<div class="stack">
+		Your Stack:
+		<ul>
 			{{#stack}}
 			<li>{{ . }}</li> {{/stack}}
-		</ol>
-	</div>
-	<div>
-		<button id="pop">Pop</button>
-	</div>
-	<br></br>
-	<div>
-		<button id="reset">Reset</button>
+		</ul>
 	</div>
 
 </body>
