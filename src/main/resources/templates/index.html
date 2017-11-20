@@ -10,13 +10,30 @@
 
 	<form method="post" action="/enter">
 		<div>
-			<input type="number" step="any" name="value" required> 
+			<input type="number" step="any" name="value" required>
 		</div>
-		<br><br>
+		<br>
+		<br>
 		<div>
-			<button id="button">Enter</button>
+			<button id="enter">Enter</button>
 		</div>
 	</form>
+	<br>
+	<br>
+	<div>Your Stack:</div>
+	<div>
+		<ol>
+			{{#stack}}
+			<li>{{ . }}</li> {{/stack}}
+		</ol>
+	</div>
+	<div>
+		<button id="pop">Pop</button>
+	</div>
+	<br></br>
+	<div>
+		<button id="reset">Reset</button>
+	</div>
 
 </body>
 </html>
