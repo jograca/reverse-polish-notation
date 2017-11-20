@@ -8,27 +8,12 @@
 <body>
 	<h2>RPN Calculator!</h2>
 
-	<input type="number" name="firstNumber" required>
-
-	<br>
-	<br>
-	
-	<input type="number" name="secondNumber" required>
-	<br>
-	<br>
-
-	<form method="post" action="/calculate">
-		<input type="hidden">
-		<button id="button">Calculate</button>
+	<form method="post" action="/enter">
+		<input type="number" step="any" name="firstNumber" required> 
+		<br>
+		<br>
+		<button id="button">Enter</button>
 	</form>
-
-	<br>
-	<br>
-	<form method="post" action="/reset">
-		<input type="hidden">
-		<button id="button">Reset</button>
-	</form>
-
 
 </body>
 </html>
