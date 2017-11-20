@@ -1,13 +1,15 @@
 package com.lmig.gfc.rpn.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class RPNController {
 	
-	@RequestMapping("/")
+	@GetMapping("/")
 	public ModelAndView showCalculator() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("index");
@@ -15,18 +17,18 @@ public class RPNController {
 		return mv;
 	}
 	
-	@RequestMapping("/calculate")
+	@PostMapping("/calculate")
 	public ModelAndView calculateResult() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("calculate");
+		mv.setViewName("index");
 		
 		return mv;
 	}
 	
-	@RequestMapping("/reset")
+	@PostMapping("/reset")
 	public ModelAndView resetCalculator() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("reset");
+		mv.setViewName("index");
 		
 		return mv;
 	}
