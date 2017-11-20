@@ -2,23 +2,20 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
-public class Undoer {
+public class OneArgumentUndoer {
 
 	private double firstNumber;
-	private double secondNumber;
-	
-	public Undoer(double firstNumber, double secondNumber) {
+
+	public OneArgumentUndoer(double firstNumber) {
 		this.firstNumber = firstNumber;
-		this.secondNumber = secondNumber;
-		
 	}
 
 	public void undo(Stack<Double> stack) {
-	
 		stack.pop();
-		stack.push(secondNumber);
-		stack.push(firstNumber);
-		
+		parentUndo(stack);
 	}
-	
+
+	protected void parentUndo(Stack<Double> stack) {
+		stack.push(firstNumber);
+	}
 }

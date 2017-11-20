@@ -36,7 +36,6 @@
 							<button id="button">-</button>
 						</form>
 					</td>
-				</tr>
 				<tr>
 					<td>
 						<form method="post" action="/multiply">
@@ -54,13 +53,36 @@
 
 		<br> <br> {{/hasTwoOrMoreNumbers}} <br> <br>
 
-		{{#hasUndoer}}
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<form method="post" action="/abs">
+							<button id="button">abs</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/sin">
+							<button id="button">sin</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/cos">
+							<button id="button">cos</button>
+						</form>
+					</td>					
+				</tr>
+			</thead>
+		</table>
+
+		<br>
+		<br> {{#hasUndoer}}
 
 		<form method="post" action="/undo">
 			<button id="button">Undo</button>
 		</form>
-		
-		{{/hasUndoer}}
+
+		{{/hasUndoer}} <br>
 
 	</div>
 

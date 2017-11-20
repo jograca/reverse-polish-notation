@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.lmig.gfc.rpn.models.Undoer;
+import com.lmig.gfc.rpn.models.OneArgumentUndoer;
+import com.lmig.gfc.rpn.models.TwoArgumentUndoer;
 
 @Controller
 public class RPNController {
 
 	private Stack<Double> stack;
-	private Undoer undoer;
-	
+	private OneArgumentUndoer undoer;
+		
 	// Constructor
 	public RPNController() {
 		this.stack = new Stack<Double>();
@@ -32,7 +33,6 @@ public class RPNController {
 		mv.addObject("stack", stack);
 		mv.addObject("hasUndoer", undoer != null);
 		mv.addObject("hasTwoOrMoreNumbers", hasTwoOrMoreNumbers());
-		
 
 		return mv;
 	}
@@ -55,7 +55,7 @@ public class RPNController {
 		double secondNumber = stack.pop();
 		double result = (firstNumber + secondNumber);
 		stack.push(result);
-		undoer = new Undoer(firstNumber, secondNumber);
+		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -70,8 +70,7 @@ public class RPNController {
 		double secondNumber = stack.pop();
 		double result = (secondNumber - firstNumber);
 		stack.push(result);
-		undoer = new Undoer(firstNumber, secondNumber);
-
+		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -86,8 +85,7 @@ public class RPNController {
 		double secondNumber = stack.pop();
 		double result = (secondNumber * firstNumber);
 		stack.push(result);
-		undoer = new Undoer(firstNumber, secondNumber);
-
+		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -102,8 +100,50 @@ public class RPNController {
 		double secondNumber = stack.pop();
 		double result = (firstNumber / secondNumber);
 		stack.push(result);
-		undoer = new Undoer(firstNumber, secondNumber);
+		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+	
+	@PostMapping("/abs")
+	public ModelAndView absoluteValue() {
+
+		double number = stack.pop();
+		double result = (Math.abs(number));
+		undoer = new OneArgumentUndoer(result);
+		stack.push(result);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+	
+	
+	@PostMapping("/sin")
+	public ModelAndView sinValue() {
+
+		double number = stack.pop();
+		double result = (Math.sin(number));
+		undoer = new OneArgumentUndoer(result);
+		stack.push(result);
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+	
+	@PostMapping("/cos")
+	public ModelAndView cosValue() {
+
+		double number = stack.pop();
+		double result = (Math.cos(number));
+		undoer = new OneArgumentUndoer(result);
+		stack.push(result);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
