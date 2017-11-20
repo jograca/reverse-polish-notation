@@ -8,12 +8,91 @@
 <body>
 	<h2>RPN Calculator!</h2>
 
-	<form method="post" action="/enter">
-		<input type="number" step="any" name="value" required> 
+	<div class="input">
+		<form method="post" action="/enter">
+			<div>
+				<input type="number" step="any" name="value" required autofocus>
+			</div>
+
+			<br> <br>
+
+			<div>
+				<button id="button">Enter</button>
+			</div>
+		</form>
+
+		<br> <br> {{#hasTwoOrMoreNumbers}}
+
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<form method="post" action="/add">
+							<button id="button">+</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/subtract">
+							<button id="button">-</button>
+						</form>
+					</td>
+				<tr>
+					<td>
+						<form method="post" action="/multiply">
+							<button id="button">*</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/divide">
+							<button id="button">/</button>
+						</form>
+					</td>
+				</tr>
+			</thead>
+		</table>
+
+		<br> <br> {{/hasTwoOrMoreNumbers}} <br> <br>
+
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<form method="post" action="/abs">
+							<button id="button">abs</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/sin">
+							<button id="button">sin</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="/cos">
+							<button id="button">cos</button>
+						</form>
+					</td>					
+				</tr>
+			</thead>
+		</table>
+
 		<br>
-		<br>
-		<button id="button">Enter</button>
-	</form>
+		<br> {{#hasUndoer}}
+
+		<form method="post" action="/undo">
+			<button id="button">Undo</button>
+		</form>
+
+		{{/hasUndoer}} <br>
+
+	</div>
+
+	<div class="stack">
+		Your Stack:
+		<ul>
+			{{#stack}}
+			<li>{{ . }}</li> {{/stack}}
+		</ul>
+	</div>
 
 </body>
 </html>
