@@ -2,7 +2,7 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
-public class Cos extends OneNumberCalculator {
+public class Cos extends OneNumberCalculation {
 
 	public Cos(Stack<Double> stack) {
 		super(stack);
