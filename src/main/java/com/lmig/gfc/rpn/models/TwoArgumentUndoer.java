@@ -2,6 +2,8 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
+// Extends is the declaration that a Class inherits a Parent Class
+
 public class TwoArgumentUndoer extends OneArgumentUndoer {
 
 	private double secondNumber;
