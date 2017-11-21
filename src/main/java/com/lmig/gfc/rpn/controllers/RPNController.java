@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.lmig.gfc.rpn.models.Adder;
+import com.lmig.gfc.rpn.models.Divider;
+import com.lmig.gfc.rpn.models.Multiplier;
 import com.lmig.gfc.rpn.models.OneArgumentUndoer;
 import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.Subtractor;
-import com.lmig.gfc.rpn.models.TwoArgumentUndoer;
 import com.lmig.gfc.rpn.models.Undoer;
 
 @Controller
 public class RPNController {
 
 	private double firstNumber;
-	private double secondNumber;
 	
 	// What can I interface in this Controller? 
 	// I can Interface with a Stack, or with an Undoer
@@ -87,12 +87,9 @@ public class RPNController {
 	@PostMapping("/multiply")
 	public ModelAndView multiplyNumbersOnStack() {
 		
-		firstNumber = stack.pop();
-		secondNumber = stack.pop();
-		double result = (secondNumber * firstNumber);
-		stack.push(result);
-		
-		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
+		Multiplier mul = new Multiplier(stack);
+		mul.goDoIt();
+		undoers.push(mul);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -103,12 +100,9 @@ public class RPNController {
 	@PostMapping("/divide")
 	public ModelAndView divideNumbersOnStack() {
 		
-		firstNumber = stack.pop();
-		secondNumber = stack.pop();
-		double result = (secondNumber / firstNumber);
-		stack.push(result);
-		
-		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
+		Divider div = new Divider(stack);
+		div.goDoIt();
+		undoers.push(div);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");

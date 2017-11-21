@@ -5,17 +5,12 @@ import java.util.Stack;
 public class Adder extends TwoNumberCalculation implements Undoer {
 
 	public Adder(Stack<Double> stack) {
-		this.stack = stack;
+		super(stack);
 	}
 	
-	public void goDoIt() {
-		
-		double firstNumber = stack.pop();
-		double secondNumber = stack.pop();
-		double result = (firstNumber + secondNumber);
-		stack.push(result);
-		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
-		
+	@Override
+	protected double doMath(double firstNumber, double secondNumber) {
+		return (firstNumber + secondNumber);
 	}
 
 }

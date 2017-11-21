@@ -4,13 +4,27 @@ import java.util.Stack;
 
 public class TwoNumberCalculation implements Undoer {
 
-	protected Stack<Double> stack;
-	protected Undoer undoer;
+	private Stack<Double> stack;
+	private Undoer undoer;
 
-	public TwoNumberCalculation() {
-		super();
+	public TwoNumberCalculation(Stack<Double> stack) {
+		this.stack = stack; 
 	}
 
+	public void goDoIt() {
+		
+		double firstNumber = stack.pop();
+		double secondNumber = stack.pop();
+		double result = doMath(firstNumber, secondNumber);
+		stack.push(result);
+		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
+		
+	}
+	
+	protected double doMath(double firstNumber, double secondNumber) {
+		return 0;
+	}
+	
 	@Override
 	public void undo(Stack<Double> stack) {
 		undoer.undo(stack);
