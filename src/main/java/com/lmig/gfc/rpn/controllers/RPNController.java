@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.lmig.gfc.rpn.models.CalculateOne;
-import com.lmig.gfc.rpn.models.CalculateTwo;
 import com.lmig.gfc.rpn.models.OneArgumentUndoer;
+import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.TwoArgumentUndoer;
+import com.lmig.gfc.rpn.models.Undoer;
 
 @Controller
 public class RPNController {
@@ -20,13 +21,14 @@ public class RPNController {
 	private double secondNumber;
 	
 	private Stack<Double> stack;
-	private OneArgumentUndoer undoer;
+	private Stack<Undoer> undoers;
+		
 	private CalculateOne calcOne = new CalculateOne(firstNumber);
-	private CalculateTwo calcTwo = new CalculateTwo(firstNumber, secondNumber);
 		
 	// Constructor
 	public RPNController() {
 		this.stack = new Stack<Double>();
+		this.undoers = new Stack<Undoer>();
 	}
 
 	public boolean hasTwoOrMoreNumbers() {
@@ -38,7 +40,7 @@ public class RPNController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("index");
 		mv.addObject("stack", stack);
-		mv.addObject("hasUndoer", undoer != null);
+		mv.addObject("hasUndoer", !undoers.isEmpty());
 		mv.addObject("hasTwoOrMoreNumbers", hasTwoOrMoreNumbers());
 
 		return mv;
@@ -47,7 +49,7 @@ public class RPNController {
 	@PostMapping("/enter")
 	public ModelAndView pushNumberOntoStack(double value) {
 		stack.push(value);
-		undoer = null; 
+		undoers.push(new PushUndoer());
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -57,10 +59,13 @@ public class RPNController {
 	
 	@PostMapping("/add")
 	public ModelAndView addNumbersOnStack() {
+				
+		firstNumber = stack.pop();
+		secondNumber = stack.pop();
+		double result = (secondNumber + firstNumber);
+		stack.push(result);
 		
-		calcTwo.addNumbersOnStack(stack);
-	
-		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
+		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
 			
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -70,9 +75,13 @@ public class RPNController {
 	
 	@PostMapping("/subtract")
 	public ModelAndView subtractNumbersOnStack() {
-
-		calcTwo.subtractNumbersOnStack(stack);
-		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
+		
+		firstNumber = stack.pop();
+		secondNumber = stack.pop();
+		double result = (secondNumber - firstNumber);
+		stack.push(result);
+		
+		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -82,9 +91,13 @@ public class RPNController {
 	
 	@PostMapping("/multiply")
 	public ModelAndView multiplyNumbersOnStack() {
-
-		calcTwo.multiplyNumbersOnStack(stack);
-		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
+		
+		firstNumber = stack.pop();
+		secondNumber = stack.pop();
+		double result = (secondNumber * firstNumber);
+		stack.push(result);
+		
+		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -94,9 +107,13 @@ public class RPNController {
 	
 	@PostMapping("/divide")
 	public ModelAndView divideNumbersOnStack() {
-
-		calcTwo.divideNumbersOnStack(stack);
-		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
+		
+		firstNumber = stack.pop();
+		secondNumber = stack.pop();
+		double result = (secondNumber / firstNumber);
+		stack.push(result);
+		
+		undoers.push(new TwoArgumentUndoer(firstNumber, secondNumber));
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -108,7 +125,7 @@ public class RPNController {
 	public ModelAndView absoluteValue() {
 
 		calcOne.absoluteNumbersOnStack(stack);
-		//undoer = new OneArgumentUndoer(number);
+		undoers.push(new OneArgumentUndoer(firstNumber));
 		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -121,7 +138,7 @@ public class RPNController {
 	public ModelAndView sinValue() {
 
 		calcOne.sinNumberOnStack(stack);
-		//undoer = new OneArgumentUndoer(number);
+		undoers.push(new OneArgumentUndoer(firstNumber));
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -133,7 +150,7 @@ public class RPNController {
 	public ModelAndView cosValue() {
 
 		calcOne.cosNumberOnStack(stack);
-		//undoer = new OneArgumentUndoer(number);
+		undoers.push(new OneArgumentUndoer(firstNumber));
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -144,6 +161,7 @@ public class RPNController {
 	@PostMapping("/undo")
 	public ModelAndView undoNumbersOnStack() {
 		
+		Undoer undoer = undoers.pop();
 		undoer.undo(stack);
 		
 		ModelAndView mv = new ModelAndView();
