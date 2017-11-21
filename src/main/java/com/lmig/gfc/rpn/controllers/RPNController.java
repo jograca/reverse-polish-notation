@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.lmig.gfc.rpn.models.CalculateOne;
 import com.lmig.gfc.rpn.models.OneArgumentUndoer;
 import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.TwoArgumentUndoer;
@@ -22,9 +21,7 @@ public class RPNController {
 	
 	private Stack<Double> stack;
 	private Stack<Undoer> undoers;
-		
-	private CalculateOne calcOne = new CalculateOne(firstNumber);
-		
+				
 	// Constructor
 	public RPNController() {
 		this.stack = new Stack<Double>();
@@ -124,7 +121,10 @@ public class RPNController {
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
 
-		calcOne.absoluteNumbersOnStack(stack);
+		firstNumber = stack.pop();
+		double result = (Math.abs(firstNumber));
+		stack.push(result);
+		
 		undoers.push(new OneArgumentUndoer(firstNumber));
 		
 		ModelAndView mv = new ModelAndView();
@@ -137,7 +137,10 @@ public class RPNController {
 	@PostMapping("/sin")
 	public ModelAndView sinValue() {
 
-		calcOne.sinNumberOnStack(stack);
+		firstNumber = stack.pop();
+		double result = (Math.sin(firstNumber));
+		stack.push(result);
+		
 		undoers.push(new OneArgumentUndoer(firstNumber));
 
 		ModelAndView mv = new ModelAndView();
@@ -149,7 +152,10 @@ public class RPNController {
 	@PostMapping("/cos")
 	public ModelAndView cosValue() {
 
-		calcOne.cosNumberOnStack(stack);
+		firstNumber = stack.pop();
+		double result = (Math.cos(firstNumber));
+		stack.push(result);
+		
 		undoers.push(new OneArgumentUndoer(firstNumber));
 
 		ModelAndView mv = new ModelAndView();
