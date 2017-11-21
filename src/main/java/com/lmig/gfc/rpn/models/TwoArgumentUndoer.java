@@ -4,7 +4,6 @@ import java.util.Stack;
 
 public class TwoArgumentUndoer extends OneArgumentUndoer {
 
-
 	private double secondNumber;
 	
 	public TwoArgumentUndoer(double firstNumber, double secondNumber) {
@@ -14,6 +13,7 @@ public class TwoArgumentUndoer extends OneArgumentUndoer {
 
 	public void undo(Stack<Double> stack) {
 		stack.pop();
+		System.out.println(stack.peek());
 		parentUndo(stack);
 	}
 

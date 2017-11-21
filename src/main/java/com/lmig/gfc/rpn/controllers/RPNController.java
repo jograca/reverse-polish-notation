@@ -8,14 +8,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.lmig.gfc.rpn.models.CalculateOne;
+import com.lmig.gfc.rpn.models.CalculateTwo;
 import com.lmig.gfc.rpn.models.OneArgumentUndoer;
 import com.lmig.gfc.rpn.models.TwoArgumentUndoer;
 
 @Controller
 public class RPNController {
 
+	private double firstNumber;
+	private double secondNumber;
+	
 	private Stack<Double> stack;
 	private OneArgumentUndoer undoer;
+	private CalculateOne calcOne = new CalculateOne(firstNumber);
+	private CalculateTwo calcTwo = new CalculateTwo(firstNumber, secondNumber);
 		
 	// Constructor
 	public RPNController() {
@@ -47,16 +54,17 @@ public class RPNController {
 
 		return mv;
 	}
-
+	
 	@PostMapping("/add")
 	public ModelAndView addNumbersOnStack() {
-
-		double firstNumber = stack.pop();
-		double secondNumber = stack.pop();
-		double result = (firstNumber + secondNumber);
-		stack.push(result);
+		
+		calcTwo.addNumbersOnStack(stack);
+		
+		System.out.println(stack);
+		
 		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
-
+		//redoer = calcTwo.addNumbersOnStack(stack);
+		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 
@@ -66,10 +74,7 @@ public class RPNController {
 	@PostMapping("/subtract")
 	public ModelAndView subtractNumbersOnStack() {
 
-		double firstNumber = stack.pop();
-		double secondNumber = stack.pop();
-		double result = (secondNumber - firstNumber);
-		stack.push(result);
+		calcTwo.subtractNumbersOnStack(stack);
 		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
@@ -81,10 +86,7 @@ public class RPNController {
 	@PostMapping("/multiply")
 	public ModelAndView multiplyNumbersOnStack() {
 
-		double firstNumber = stack.pop();
-		double secondNumber = stack.pop();
-		double result = (secondNumber * firstNumber);
-		stack.push(result);
+		calcTwo.multiplyNumbersOnStack(stack);
 		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
@@ -96,10 +98,7 @@ public class RPNController {
 	@PostMapping("/divide")
 	public ModelAndView divideNumbersOnStack() {
 
-		double firstNumber = stack.pop();
-		double secondNumber = stack.pop();
-		double result = (firstNumber / secondNumber);
-		stack.push(result);
+		calcTwo.divideNumbersOnStack(stack);
 		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
 
 		ModelAndView mv = new ModelAndView();
@@ -111,10 +110,8 @@ public class RPNController {
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
 
-		double number = stack.pop();
-		double result = (Math.abs(number));
-		undoer = new OneArgumentUndoer(number);
-		stack.push(result);
+		calcOne.absoluteNumbersOnStack(stack);
+		//undoer = new OneArgumentUndoer(number);
 		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -126,10 +123,8 @@ public class RPNController {
 	@PostMapping("/sin")
 	public ModelAndView sinValue() {
 
-		double number = stack.pop();
-		double result = (Math.sin(number));
-		undoer = new OneArgumentUndoer(number);
-		stack.push(result);
+		calcOne.sinNumberOnStack(stack);
+		//undoer = new OneArgumentUndoer(number);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -140,10 +135,8 @@ public class RPNController {
 	@PostMapping("/cos")
 	public ModelAndView cosValue() {
 
-		double number = stack.pop();
-		double result = (Math.cos(number));
-		undoer = new OneArgumentUndoer(number);
-		stack.push(result);
+		calcOne.cosNumberOnStack(stack);
+		//undoer = new OneArgumentUndoer(number);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -155,7 +148,15 @@ public class RPNController {
 	public ModelAndView undoNumbersOnStack() {
 		
 		undoer.undo(stack);
-		undoer = null;
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+	
+	@PostMapping("/redo")
+	public ModelAndView redoNumbersOnStack() {
 		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
