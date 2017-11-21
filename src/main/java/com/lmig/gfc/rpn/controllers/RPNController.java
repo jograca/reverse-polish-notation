@@ -12,6 +12,7 @@ import com.lmig.gfc.rpn.models.Abs;
 import com.lmig.gfc.rpn.models.Adder;
 import com.lmig.gfc.rpn.models.Cos;
 import com.lmig.gfc.rpn.models.Divider;
+import com.lmig.gfc.rpn.models.Exponent;
 import com.lmig.gfc.rpn.models.Multiplier;
 import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.Sin;
@@ -112,6 +113,13 @@ public class RPNController {
 
 		Divider div = new Divider(stack);
 		return doTwoNumberOperation(div);
+	}
+	
+	@PostMapping("/exponent")
+	public ModelAndView exponentNumbersOnStack() {
+		
+		Exponent exp = new Exponent(stack);
+		return doTwoNumberOperation(exp);
 	}
 
 	@PostMapping("/abs")
