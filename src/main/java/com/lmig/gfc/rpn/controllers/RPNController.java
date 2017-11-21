@@ -11,12 +11,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.lmig.gfc.rpn.models.Abs;
 import com.lmig.gfc.rpn.models.Adder;
 import com.lmig.gfc.rpn.models.Cos;
+import com.lmig.gfc.rpn.models.Cosh;
 import com.lmig.gfc.rpn.models.Divider;
 import com.lmig.gfc.rpn.models.Exponent;
+import com.lmig.gfc.rpn.models.Log;
 import com.lmig.gfc.rpn.models.Multiplier;
 import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.Sin;
+import com.lmig.gfc.rpn.models.Sinh;
 import com.lmig.gfc.rpn.models.Subtractor;
+import com.lmig.gfc.rpn.models.Tan;
+import com.lmig.gfc.rpn.models.Tanh;
 import com.lmig.gfc.rpn.models.OneNumberCalculation;
 import com.lmig.gfc.rpn.models.TwoNumberCalculation;
 import com.lmig.gfc.rpn.models.Undoer;
@@ -134,7 +139,6 @@ public class RPNController {
 
 		Sin sin = new Sin(stack);
 		return doOneNumberOperation(sin);
-
 	}
 
 	@PostMapping("/cos")
@@ -142,7 +146,41 @@ public class RPNController {
 
 		Cos cos = new Cos(stack);
 		return doOneNumberOperation(cos);
+	}
+	
+	@PostMapping("/tan")
+	public ModelAndView tanValue() {
 
+		Tan tan = new Tan(stack);
+		return doOneNumberOperation(tan);
+	}
+	
+	@PostMapping("/sinh")
+	public ModelAndView sinhValue() {
+
+		Sinh sinh = new Sinh(stack);
+		return doOneNumberOperation(sinh);
+	}
+
+	@PostMapping("/cosh")
+	public ModelAndView coshValue() {
+
+		Cosh cosh = new Cosh(stack);
+		return doOneNumberOperation(cosh);
+	}
+	
+	@PostMapping("/tanh")
+	public ModelAndView tanhValue() {
+
+		Tanh tanh = new Tanh(stack);
+		return doOneNumberOperation(tanh);
+	}
+	
+	@PostMapping("/log")
+	public ModelAndView logValue() {
+
+		Log log = new Log(stack);
+		return doOneNumberOperation(log);
 	}
 
 	@PostMapping("/undo")
