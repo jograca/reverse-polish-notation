@@ -2,6 +2,10 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
+// In order to implement the Interface, only the Parent Class
+// needs to declare that the Class implements the Interface
+// (not the Children)
+
 public class OneArgumentUndoer implements Undoer {
 
 	private double firstNumber;
