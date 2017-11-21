@@ -16,9 +16,6 @@ public class OneArgumentUndoer {
 	}
 
 	protected void parentUndo(Stack<Double> stack) {
-		System.out.println(stack.peek());
-		System.out.println(firstNumber);
-		
 		stack.push(firstNumber);
 	}
 }

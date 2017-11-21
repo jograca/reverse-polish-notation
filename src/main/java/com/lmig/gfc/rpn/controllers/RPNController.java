@@ -59,12 +59,9 @@ public class RPNController {
 	public ModelAndView addNumbersOnStack() {
 		
 		calcTwo.addNumbersOnStack(stack);
-		
-		System.out.println(stack);
-		
+	
 		undoer = new TwoArgumentUndoer(firstNumber, secondNumber);
-		//redoer = calcTwo.addNumbersOnStack(stack);
-		
+			
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 
