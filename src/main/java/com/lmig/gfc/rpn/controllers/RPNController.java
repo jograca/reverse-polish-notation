@@ -16,16 +16,18 @@ import com.lmig.gfc.rpn.models.Multiplier;
 import com.lmig.gfc.rpn.models.PushUndoer;
 import com.lmig.gfc.rpn.models.Sin;
 import com.lmig.gfc.rpn.models.Subtractor;
+import com.lmig.gfc.rpn.models.OneNumberCalculation;
+import com.lmig.gfc.rpn.models.TwoNumberCalculation;
 import com.lmig.gfc.rpn.models.Undoer;
 
 @Controller
 public class RPNController {
-	
-	// What can I interface in this Controller? 
+
+	// What can I interface in this Controller?
 	// I can Interface with a Stack, or with an Undoer
 	private Stack<Double> stack;
 	private Stack<Undoer> undoers;
-				
+
 	// Constructor
 	// Must setup any Inteface I plan on using
 	public RPNController() {
@@ -36,11 +38,31 @@ public class RPNController {
 	public boolean hasTwoOrMoreNumbers() {
 		return (stack.size() >= 2);
 	}
-	
+
 	public boolean hasOneOrMoreNumbers() {
 		return (stack.size() >= 1);
 	}
- 	
+
+	private ModelAndView doOneNumberOperation(OneNumberCalculation onc) {
+		onc.goDoIt();
+		undoers.push(onc);
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+
+	private ModelAndView doTwoNumberOperation(TwoNumberCalculation tnc) {
+		tnc.goDoIt();
+		undoers.push(tnc);
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
+	}
+
 	@GetMapping("/")
 	public ModelAndView showCalculator() {
 		ModelAndView mv = new ModelAndView();
@@ -63,113 +85,73 @@ public class RPNController {
 
 		return mv;
 	}
-	
+
 	@PostMapping("/add")
 	public ModelAndView addNumbersOnStack() {
-		
+
 		Adder adder = new Adder(stack);
-		adder.goDoIt();
-		undoers.push(adder);
-			
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-		return mv;
+		return doTwoNumberOperation(adder);
 	}
-	
+
 	@PostMapping("/subtract")
 	public ModelAndView subtractNumbersOnStack() {
-		
+
 		Subtractor sub = new Subtractor(stack);
-		sub.goDoIt();
-		undoers.push(sub);
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return doTwoNumberOperation(sub);
 	}
-	
+
 	@PostMapping("/multiply")
 	public ModelAndView multiplyNumbersOnStack() {
-		
+
 		Multiplier mul = new Multiplier(stack);
-		mul.goDoIt();
-		undoers.push(mul);
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return doTwoNumberOperation(mul);
 	}
-	
+
 	@PostMapping("/divide")
 	public ModelAndView divideNumbersOnStack() {
-		
+
 		Divider div = new Divider(stack);
-		div.goDoIt();
-		undoers.push(div);
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return doTwoNumberOperation(div);
 	}
-	
+
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
 
 		Abs abs = new Abs(stack);
-		abs.goDoIt();
-		undoers.push(abs);
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return doOneNumberOperation(abs);
 	}
-	
-	
+
 	@PostMapping("/sin")
 	public ModelAndView sinValue() {
 
 		Sin sin = new Sin(stack);
-		sin.goDoIt();
-		undoers.push(sin);
+		return doOneNumberOperation(sin);
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
 	}
-	
+
 	@PostMapping("/cos")
 	public ModelAndView cosValue() {
 
 		Cos cos = new Cos(stack);
-		cos.goDoIt();
-		undoers.push(cos);
+		return doOneNumberOperation(cos);
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
 	}
-	
+
 	@PostMapping("/undo")
 	public ModelAndView undoNumbersOnStack() {
-		
+
 		Undoer undoer = undoers.pop();
 		undoer.undo(stack);
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 
 		return mv;
 	}
-	
+
 	@PostMapping("/redo")
 	public ModelAndView redoNumbersOnStack() {
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 

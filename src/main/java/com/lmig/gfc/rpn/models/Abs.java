@@ -2,7 +2,7 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
-public class Abs extends OneNumberCalculator {
+public class Abs extends OneNumberCalculation {
 
 	public Abs(Stack<Double> stack) {
 		super(stack);

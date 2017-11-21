@@ -2,7 +2,7 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
-public class Sin extends OneNumberCalculator {
+public class Sin extends OneNumberCalculation {
 
 	public Sin(Stack<Double> stack) {
 		super(stack);
