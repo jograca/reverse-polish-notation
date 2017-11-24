@@ -2,7 +2,7 @@ package com.lmig.gfc.rpn.models;
 
 import java.util.Stack;
 
-public abstract class OneNumberCalculation implements Undoer {
+public abstract class OneNumberCalculation implements Undoer, GoDoer {
 
 	private Stack<Double> stack;
 	private Undoer undoer;

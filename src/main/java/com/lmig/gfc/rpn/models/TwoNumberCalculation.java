@@ -7,7 +7,7 @@ import java.util.Stack;
 // Indicates that the Child classes are the ones that need to be instantiated
 // This method does not make sense - it returns 0 
 
-public abstract class TwoNumberCalculation implements Undoer {
+public abstract class TwoNumberCalculation implements Undoer, GoDoer {
 
 	private Stack<Double> stack;
 	private Undoer undoer;
