@@ -8,23 +8,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.lmig.gfc.rpn.models.Abs;
+import com.lmig.gfc.rpn.models.AbsoluterOfOneNumber;
 import com.lmig.gfc.rpn.models.Adder;
 import com.lmig.gfc.rpn.models.Cos;
 import com.lmig.gfc.rpn.models.Cosh;
 import com.lmig.gfc.rpn.models.Divider;
 import com.lmig.gfc.rpn.models.Exponent;
+import com.lmig.gfc.rpn.models.GoDoer;
 import com.lmig.gfc.rpn.models.Log;
 import com.lmig.gfc.rpn.models.Multiplier;
-import com.lmig.gfc.rpn.models.PushUndoer;
+import com.lmig.gfc.rpn.models.ItDoesThePushing;
 import com.lmig.gfc.rpn.models.Sin;
 import com.lmig.gfc.rpn.models.Sinh;
 import com.lmig.gfc.rpn.models.Subtractor;
 import com.lmig.gfc.rpn.models.Tan;
 import com.lmig.gfc.rpn.models.Tanh;
 import com.lmig.gfc.rpn.models.OneNumberCalculation;
-import com.lmig.gfc.rpn.models.TwoNumberCalculation;
-import com.lmig.gfc.rpn.models.Undoer;
+
+// Button to clear stack taht is undoable
+// Stack maniuplation operations:
+// * Swap (change positions)
+// * Rotate - take 3 most recent operations so oldest becomes newest
 
 @Controller
 public class RPNController {
@@ -32,13 +36,15 @@ public class RPNController {
 	// What can I interface in this Controller?
 	// I can Interface with a Stack, or with an Undoer
 	private Stack<Double> stack;
-	private Stack<Undoer> undoers;
+	private Stack<GoDoer> undoers;
+	private Stack<GoDoer> redoers;
 
 	// Constructor
 	// Must setup any Inteface I plan on using
 	public RPNController() {
 		this.stack = new Stack<Double>();
-		this.undoers = new Stack<Undoer>();
+		this.undoers = new Stack<GoDoer>();
+		this.redoers = new Stack<GoDoer>();
 	}
 
 	public boolean hasTwoOrMoreNumbers() {
@@ -52,6 +58,7 @@ public class RPNController {
 	private ModelAndView doOneNumberOperation(OneNumberCalculation onc) {
 		onc.goDoIt();
 		undoers.push(onc);
+		redoers.clear();
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -59,7 +66,7 @@ public class RPNController {
 		return mv;
 	}
 
-	private ModelAndView doTwoNumberOperation(TwoNumberCalculation tnc) {
+	private ModelAndView doTwoNumberOperation(GoDoer tnc) {
 		tnc.goDoIt();
 		undoers.push(tnc);
 
@@ -75,6 +82,7 @@ public class RPNController {
 		mv.setViewName("index");
 		mv.addObject("stack", stack);
 		mv.addObject("hasUndoer", !undoers.isEmpty());
+		mv.addObject("hasRedoer", !redoers.isEmpty());
 		mv.addObject("hasTwoOrMoreNumbers", hasTwoOrMoreNumbers());
 		mv.addObject("hasOneOrMoreNumbers", hasOneOrMoreNumbers());
 
@@ -83,13 +91,8 @@ public class RPNController {
 
 	@PostMapping("/enter")
 	public ModelAndView pushNumberOntoStack(double value) {
-		stack.push(value);
-		undoers.push(new PushUndoer());
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		ItDoesThePushing pusher = new ItDoesThePushing(stack, value);
+		return doTwoNumberOperation(pusher);
 	}
 
 	@PostMapping("/add")
@@ -119,19 +122,25 @@ public class RPNController {
 		Divider div = new Divider(stack);
 		return doTwoNumberOperation(div);
 	}
-	
+
 	@PostMapping("/exponent")
 	public ModelAndView exponentNumbersOnStack() {
-		
+
 		Exponent exp = new Exponent(stack);
 		return doTwoNumberOperation(exp);
 	}
 
+	// @PostMapping("/abs")
+	// public ModelAndView absoluteValue() {
+	//
+	// Abs abs = new Abs(stack);
+	// return doOneNumberOperation(abs);
+	// }
+	//
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
-
-		Abs abs = new Abs(stack);
-		return doOneNumberOperation(abs);
+		AbsoluterOfOneNumber absoluter = new AbsoluterOfOneNumber(stack);
+		return doTwoNumberOperation(absoluter);
 	}
 
 	@PostMapping("/sin")
@@ -147,14 +156,14 @@ public class RPNController {
 		Cos cos = new Cos(stack);
 		return doOneNumberOperation(cos);
 	}
-	
+
 	@PostMapping("/tan")
 	public ModelAndView tanValue() {
 
 		Tan tan = new Tan(stack);
 		return doOneNumberOperation(tan);
 	}
-	
+
 	@PostMapping("/sinh")
 	public ModelAndView sinhValue() {
 
@@ -168,14 +177,14 @@ public class RPNController {
 		Cosh cosh = new Cosh(stack);
 		return doOneNumberOperation(cosh);
 	}
-	
+
 	@PostMapping("/tanh")
 	public ModelAndView tanhValue() {
 
 		Tanh tanh = new Tanh(stack);
 		return doOneNumberOperation(tanh);
 	}
-	
+
 	@PostMapping("/log")
 	public ModelAndView logValue() {
 
@@ -186,17 +195,24 @@ public class RPNController {
 	@PostMapping("/undo")
 	public ModelAndView undoNumbersOnStack() {
 
-		Undoer undoer = undoers.pop();
+		GoDoer undoer = undoers.pop();
 		undoer.undo(stack);
+		redoers.push(undoer);
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return redirectToHome();
 	}
 
 	@PostMapping("/redo")
 	public ModelAndView redoNumbersOnStack() {
+
+		GoDoer godoer = redoers.pop();
+		godoer.goDoIt();
+		undoers.push(godoer);
+
+		return redirectToHome();
+	}
+
+	private ModelAndView redirectToHome() {
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
