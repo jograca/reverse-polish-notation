@@ -38,6 +38,7 @@ public class RPNController {
 	private Stack<Double> stack;
 	private Stack<GoDoer> undoers;
 	private Stack<GoDoer> redoers;
+	private Stack<GoDoer> clearers;
 
 	// Constructor
 	// Must setup any Inteface I plan on using
@@ -45,6 +46,7 @@ public class RPNController {
 		this.stack = new Stack<Double>();
 		this.undoers = new Stack<GoDoer>();
 		this.redoers = new Stack<GoDoer>();
+		this.clearers = new Stack<GoDoer>();
 	}
 
 	public boolean hasTwoOrMoreNumbers() {
@@ -58,6 +60,7 @@ public class RPNController {
 	private ModelAndView doOneNumberOperation(OneNumberCalculation onc) {
 		onc.goDoIt();
 		undoers.push(onc);
+		clearers.push(onc);
 		redoers.clear();
 
 		ModelAndView mv = new ModelAndView();
@@ -69,6 +72,8 @@ public class RPNController {
 	private ModelAndView doTwoNumberOperation(GoDoer tnc) {
 		tnc.goDoIt();
 		undoers.push(tnc);
+		clearers.push(tnc);
+		redoers.clear();
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
@@ -130,13 +135,6 @@ public class RPNController {
 		return doTwoNumberOperation(exp);
 	}
 
-	// @PostMapping("/abs")
-	// public ModelAndView absoluteValue() {
-	//
-	// Abs abs = new Abs(stack);
-	// return doOneNumberOperation(abs);
-	// }
-	//
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
 		AbsoluterOfOneNumber absoluter = new AbsoluterOfOneNumber(stack);
@@ -194,9 +192,15 @@ public class RPNController {
 
 	@PostMapping("/undo")
 	public ModelAndView undoNumbersOnStack() {
-
+		
 		GoDoer undoer = undoers.pop();
+		GoDoer clearer = clearers.pop();
+		
+		clearer.goDoIt();
+		undoer.goDoIt();
+		
 		undoer.undo(stack);
+		
 		redoers.push(undoer);
 
 		return redirectToHome();
@@ -212,8 +216,18 @@ public class RPNController {
 		return redirectToHome();
 	}
 
-	private ModelAndView redirectToHome() {
+	@PostMapping("/clear")
+	public ModelAndView clearNumbersOnStack() {
+		
+		GoDoer clearer = clearers.pop();
+		undoers.push(clearer);
+		
+		stack.clear();
+		
+		return redirectToHome();
+	}
 
+	private ModelAndView redirectToHome() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 
