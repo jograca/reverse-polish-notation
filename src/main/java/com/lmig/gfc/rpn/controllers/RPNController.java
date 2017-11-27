@@ -20,10 +20,13 @@ import com.lmig.gfc.rpn.models.Multiplier;
 import com.lmig.gfc.rpn.models.ItDoesThePushing;
 import com.lmig.gfc.rpn.models.Sin;
 import com.lmig.gfc.rpn.models.Sinh;
+import com.lmig.gfc.rpn.models.StackClearer;
 import com.lmig.gfc.rpn.models.Subtractor;
+import com.lmig.gfc.rpn.models.Swapper;
 import com.lmig.gfc.rpn.models.Tan;
 import com.lmig.gfc.rpn.models.Tanh;
 import com.lmig.gfc.rpn.models.OneNumberCalculation;
+import com.lmig.gfc.rpn.models.Rotator;
 
 // Button to clear stack taht is undoable
 // Stack maniuplation operations:
@@ -45,14 +48,26 @@ public class RPNController {
 		this.stack = new Stack<Double>();
 		this.undoers = new Stack<GoDoer>();
 		this.redoers = new Stack<GoDoer>();
+
+	}
+
+	public boolean hasOneOrMoreNumbers() {
+		return (stack.size() >= 1);
 	}
 
 	public boolean hasTwoOrMoreNumbers() {
 		return (stack.size() >= 2);
 	}
 
-	public boolean hasOneOrMoreNumbers() {
-		return (stack.size() >= 1);
+	public boolean hasThreeOrMoreNumbers() {
+		return (stack.size() >= 3);
+	}
+
+	private ModelAndView redirectToHome() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+
+		return mv;
 	}
 
 	private ModelAndView doOneNumberOperation(OneNumberCalculation onc) {
@@ -60,20 +75,15 @@ public class RPNController {
 		undoers.push(onc);
 		redoers.clear();
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return redirectToHome();
 	}
 
 	private ModelAndView doTwoNumberOperation(GoDoer tnc) {
 		tnc.goDoIt();
 		undoers.push(tnc);
+		redoers.clear();
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-
-		return mv;
+		return redirectToHome();
 	}
 
 	@GetMapping("/")
@@ -83,8 +93,9 @@ public class RPNController {
 		mv.addObject("stack", stack);
 		mv.addObject("hasUndoer", !undoers.isEmpty());
 		mv.addObject("hasRedoer", !redoers.isEmpty());
-		mv.addObject("hasTwoOrMoreNumbers", hasTwoOrMoreNumbers());
 		mv.addObject("hasOneOrMoreNumbers", hasOneOrMoreNumbers());
+		mv.addObject("hasTwoOrMoreNumbers", hasTwoOrMoreNumbers());
+		mv.addObject("hasThreeOrMoreNumbers", hasThreeOrMoreNumbers());
 
 		return mv;
 	}
@@ -130,13 +141,6 @@ public class RPNController {
 		return doTwoNumberOperation(exp);
 	}
 
-	// @PostMapping("/abs")
-	// public ModelAndView absoluteValue() {
-	//
-	// Abs abs = new Abs(stack);
-	// return doOneNumberOperation(abs);
-	// }
-	//
 	@PostMapping("/abs")
 	public ModelAndView absoluteValue() {
 		AbsoluterOfOneNumber absoluter = new AbsoluterOfOneNumber(stack);
@@ -212,12 +216,25 @@ public class RPNController {
 		return redirectToHome();
 	}
 
-	private ModelAndView redirectToHome() {
+	@PostMapping("clear")
+	public ModelAndView clearNumbersOnStack() {
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
+		StackClearer clearer = new StackClearer(stack);
+		return doTwoNumberOperation(clearer);
+	}
 
-		return mv;
+	@PostMapping("/swap")
+	public ModelAndView swap() {
+
+		Swapper swapper = new Swapper(stack);
+		return doTwoNumberOperation(swapper);
+	}
+
+	@PostMapping("/rotate")
+	public ModelAndView rotate() {
+
+		Rotator rotator = new Rotator(stack);
+		return doTwoNumberOperation(rotator);
 	}
 
 }

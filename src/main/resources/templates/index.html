@@ -92,7 +92,14 @@
 
 		{{/hasRedoer}} <br>
 		
-		
+		<br>
+		<br>
+
+		{{#hasOneOrMoreNumbers}}
+		<form method="post" action="/clear">
+			<button id="button">Clear</button>
+		</form>
+		{{/hasOneOrMoreNumbers}}
 
 	</div>
 
